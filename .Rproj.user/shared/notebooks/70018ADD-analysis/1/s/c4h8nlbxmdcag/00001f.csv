@@ -1,0 +1,7 @@
+"0","heart_attack |>"
+"0","  filter(Heart.rate != 1111) |>"
+"0","  group_by(Result) |>"
+"0","  summarize(mean_heartrate = mean(Heart.rate, na.rm = TRUE),"
+"0","            sd_heartrate = sd(Heart.rate, na.rm = TRUE),"
+"0","            min_heartrate = min(Heart.rate, na.rm = TRUE),"
+"0","            max_heartrate = max(Heart.rate, na.rm = TRUE))"

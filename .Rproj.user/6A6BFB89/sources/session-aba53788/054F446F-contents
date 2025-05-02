@@ -1,0 +1,119 @@
+---
+title: "Heart Attack Risk Analysis"
+subtitle: "STAT 230 Spring 2025"
+author: "Nidhi Patel"
+format:
+  html:
+    embed-resources: true
+---
+
+This project analyzes cardiovascular health data to explore factors associated with heart attack risk.
+
+# Data
+  (https://www.kaggle.com/datasets/fatemehmohammadinia/heart-attack-dataset-tarik-a-rashid)
+
+**Variables:**
+
+- `Age`: Patient age in years (Numeric Discrete)
+- `Gender`: 1 = Male 0 = Female (categorical)
+- `Heart.Rate`: Heart beats per minute (Numeric Discrete)
+- `Systolic.blood.pressure`: Max BP (mm Hg) (Numeric Discrete)
+- `Diastolic.blood.pressure`: Min BP (mm Hg) (Numeric Discrete)
+- `Blood Sugar`: Blood Sugar level (Numeric Discrete)
+- `CK-MB`: Enzyme level indicating muscle damage (Numeric Continuous)
+- `Troponin`: Cardiac biomarker (Numeric Continuous)
+- `Result`: positive = Had heart attack 0 = No heart attack (Categorical)
+---
+
+# Question 
+
+> Is there a difference in Age between patients who had heart attacks and those who did not?
+
+> Can we predict Troponin levels using CK-MB and Systolic Blood Pressure?
+---  
+
+
+### Load libraries and Data
+```{r}
+library(tidyverse)
+
+heart_attack <- read.csv('./heartAttack.csv')
+```
+
+
+# Descriptive Analysis
+
+## Histogram: Blood Sugar Distribution
+```{r}
+heart_attack |>
+  ggplot(aes(x = Blood.sugar)) +
+  geom_histogram(fill = "steelblue", color = "black") +
+  labs(title = "Age Distribution")
+
+```
+
+## BoxPlot: Troponin levels by Result
+```{r}
+heart_attack |>
+  ggplot(aes(x = Result, y = Age)) +
+  geom_boxplot(fill = "lightcoral") +
+  labs(x = "Heart Attack", title = "Troponin Levels by Heart Attack Result")
+
+```
+## Summary of the data
+```{r}
+heart_attack |>
+  filter(Heart.rate != 1111) |>
+  group_by(Result) |>
+  summarize(mean_heartrate = mean(Heart.rate, na.rm = TRUE),
+            sd_heartrate = sd(Heart.rate, na.rm = TRUE),
+            min_heartrate = min(Heart.rate, na.rm = TRUE),
+            max_heartrate = max(Heart.rate, na.rm = TRUE))
+
+```
+---
+
+# Inferential Analysis
+
+## t-test: Troponin by heart attack
+```{r}
+
+t.test(Troponin ~ Result, data = heart_attack)
+
+```
+## Linear Model: Predict Troponin using CK-MB and Systolic BP
+```{r}
+
+attack_model <- lm(Troponin ~ CK.MB + Systolic.blood.pressure,
+                   data = heart_attack)
+summary(attack_model)
+
+```
+---
+# Interpretation
+
+## t-test
+
+> The t-test determines whether there is a statistically significant difference in Troponin levels between patients who experienced a heart attack (positive) and those who did not (negative).
+
+The test showed:
+
+- "t = -10.33"
+- "Degrees of freedom = 1048"
+- "p-value < 2.2e-16"
+- "95% confidence interval: [-0.647, -0.440]"
+
+> The extremely small p-value provides evidence to reject the null hyptothesis, which means that the Troponin levels are not equal between the two groups.
+> The mean Troponin level in the non-heart attack group was about 0.027, while in the heart attack group it was 0.571. This large statistical difference confirms that Troponin levels are substantially elevated in patients who had a heart attack.
+
+## Linear Regression
+
+> The multiple linear regression model predicts the Troponin levels based on CK-MB and Systolic Blood Pressure.
+
+However, the model did not show statistical significance overall:
+
+- R<sup>2</sup> = 0.0021, indicating that less than 1% of the variability in Troponin levels is explained by these two predictors.
+- The F-statistic = 1.415 (p = 0.2433) suggests the model does not provide a better fit than a horizontal line.
+- Neither CK-MB (p = 0.579) nor Systolic BP (p = 0.115) were statistically significant individual predictors.
+
+> This result implies that although these variables may be biologically related to cardiac stress, they are not useful for predicting Troponin in this dataset. Other variables—such as time since onset, severity of infarction, or additional lab markers—might be needed to build a better predictive model.

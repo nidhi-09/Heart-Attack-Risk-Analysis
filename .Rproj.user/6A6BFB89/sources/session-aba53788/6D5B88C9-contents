@@ -1,0 +1,77 @@
+---
+  title: "Heart Attack Risk Analysis"
+subtitle: "STAT 230 Spring 2025"
+author: "Nidhi Patel"
+format:
+  html:
+  embed-resources: true
+---
+  
+  # Data
+  
+  [Download data on price houses](https://www.kaggle.com/datasets/yasserh/housing-prices-dataset) and set it up in your working environment.
+
+Load libraries (`tidyverse` and `effects`), and read the data in.
+
+```{r}
+library(tidyverse)
+library(effects)
+
+housing <- read.csv('')
+```
+
+
+# Question 
+
+> 
+  
+  
+  ## Distribution of price
+  
+  What is the distribution like for the house price variable? (plot a histogram)
+
+```{r}
+housing |>
+  ggplot(aes(x = price)) +
+  geom_histogram()
+
+
+```
+
+
+
+## Distribution of price x mainroad
+
+What is the distribution of price across whether the house is near a main road or not? (plot a box plot)
+
+```{r}
+housing |>
+  ggplot(aes(x = price, y = mainroad)) +
+  geom_boxplot()
+```
+
+## Relatioship of price x area
+
+What is the relationship of price and area? (plot a scatterplot)
+
+```{r}
+housing |>
+  ggplot(aes(x = price, y = area)) +
+  geom_point()
+
+
+```
+
+# Linear Model
+
+Run a linear model on price (y) and any dependent variable you might find appropriate
+
+```{r}
+model_housing <- lm(price ~ stories+ mainroad + furnishingstatus + parking + basement + bathrooms + area +prefarea , data = housing)
+
+summary(model_housing)
+```
+
+# What factors have an effect on house price?
+
+The regression analysis rveals that several key factors significantly influence the housing prices. These include number of stories, availability of parking, number of bathrooms, presence of a basement, total area, and whether it's located in a preferred area or along the mainroad. Additionally, unfurnished homes tenf to significantly reduce the value, while semi furnished does not have a statistically significant impact.

@@ -1,0 +1,5 @@
+"0","heart_attack |>"
+"0","  ggplot(aes(x = Result, y = Age)) +"
+"0","  geom_boxplot(fill = ""lightcoral"") +"
+"0","  labs(x = ""Heart Attack"", title = ""Troponin Levels by Heart Attack Result"")"
+"0",""
